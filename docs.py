@@ -1,5 +1,5 @@
 import shutil,os,requests
-from colores_consola import bcolors
+from utils.colores_consola import bcolors
 
 
 def descargar_documentos(pdf_dict,carpeta_destino):

@@ -1,7 +1,7 @@
 import re
 import pdfplumber
 
-from colores_consola import bcolors
+from utils.colores_consola import bcolors
 
 
 def extraer_textos(orador, ruta, paginas):
