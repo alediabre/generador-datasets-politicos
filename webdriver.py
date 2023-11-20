@@ -8,6 +8,21 @@ from colores_consola import bcolors
 
 # ==========================================
 
+
+def get_bot():
+
+    options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    #options.add_argument("--headless")
+    options.add_argument("--log-level=3")
+    mobile_emulation = {
+        "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/90.0.1025.166 Mobile Safari/535.19"}
+    options.add_experimental_option("mobileEmulation", mobile_emulation)
+
+    bot = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    return bot
+
+
 def scraping(orador,legislatura,paginacion):
     '''
     Mediante un bot automatizado de Selenium, navega por la web del cogreso.
@@ -19,7 +34,7 @@ def scraping(orador,legislatura,paginacion):
 
     ruta = 'https://www.congreso.es/es/busqueda-de-intervenciones'
     dict_pdf = dict()
-    print(f"{bcolors.BOLD}Recuperando rutas de '{ruta}'...{bcolors.ENDC}")
+    print(f"{bcolors.BOLD}\nRecuperando rutas de '{ruta}'...{bcolors.ENDC}")
 
     def guardar_links():
         '''
@@ -30,27 +45,23 @@ def scraping(orador,legislatura,paginacion):
 
         for seleccion in selecciones_diputado:
             elem = seleccion.find_elements(By.CSS_SELECTOR, 'a')[4]
-            link_pdf = elem.get_attribute('href').split('#')
-            pdf = link_pdf[0]
-            pag = int(link_pdf[1].split('=')[1])
+            
+            enlace = elem.get_attribute('href')
+            if 'public_oficiales' in enlace: #Previene errores si el enlace no es correcto
+                link_pdf = enlace.split('#')
+                pdf = link_pdf[0]
+                pag = int(link_pdf[1].split('=')[1])
 
-            if pdf not in dict_pdf.keys():
-                dict_pdf[pdf] = [pag]
-            else:
-                paginas = dict_pdf[pdf]
-                paginas.append(pag)
-                dict_pdf[pdf] = sorted(paginas) #Listas ordenadas de paginas para que funcione más adelante como pila
+                if pdf not in dict_pdf.keys():
+                    dict_pdf[pdf] = [pag]
+                else:
+                    paginas = dict_pdf[pdf]
+                    paginas.append(pag)
+                    dict_pdf[pdf] = sorted(paginas) #Listas ordenadas de paginas para que funcione más adelante como pila
 
-    #CREAR NAVEGADOR-------------------------------------------------------------------------------------
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    #options.add_argument("--headless")
-    options.add_argument("--log-level=3")
-    mobile_emulation = {
-        "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/90.0.1025.166 Mobile Safari/535.19"}
-    options.add_experimental_option("mobileEmulation", mobile_emulation)
-
-    bot = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    #CREAR NAVEGADOR----------------------------------------------------------------------------------------
+    
+    bot = get_bot()
 
     #BUSQUEDA-----------------------------------------------------------------------------------------------
 
@@ -83,7 +94,36 @@ def scraping(orador,legislatura,paginacion):
         bot.execute_script("arguments[0].scrollIntoView();", boton_siguiente)
         bot.execute_script("arguments[0].click();", boton_siguiente)
         print(f"{bcolors.BOLD}Paginación: {i+1}/{paginacion}{bcolors.ENDC}", end="\r")
-        time.sleep(1)
+        time.sleep(1.5)
 
     print(f"{bcolors.BOLD}{bcolors.OKGREEN}{len(dict_pdf.keys())} enlaces recuperados.{bcolors.ENDC}{bcolors.ENDC}")
     return dict_pdf
+
+
+
+def get_oradores(legislatura):
+
+    print(f"{bcolors.BOLD}\nBuscando oradores. Espere unos segundos...\n{bcolors.ENDC}")
+    lista_oradores = []
+    ruta = 'https://www.congreso.es/es/busqueda-de-intervenciones'
+    bot = get_bot()
+    bot.get(ruta)
+    time.sleep(1)
+
+    #Introducir filtro de legislatura-----------------------------------------------------------------------
+    filtro_legislatura = bot.find_element(By.CSS_SELECTOR, 'select.legislaturas')
+    filtro_legislatura.click()
+
+    opcion_legislatura = filtro_legislatura.find_element(By.CSS_SELECTOR, 'option[value="'+str(legislatura)+'"]')
+    opcion_legislatura.click()
+    time.sleep(1)
+
+    mostrar_oradores = bot.find_element(By.CSS_SELECTOR, '#plus_fautor')
+    mostrar_oradores.click()
+    time.sleep(2)
+
+    oradores = bot.find_elements(By.CSS_SELECTOR, 'ul.modalOradoresDiputados li')
+    for orador in oradores:
+        lista_oradores.append(orador.get_attribute('innerText'))
+
+    return lista_oradores

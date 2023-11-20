@@ -2,7 +2,7 @@ import pandas as pd
 
 from colores_consola import bcolors
 from docs import descargar_documentos
-from webdriver import scraping
+from webdriver import scraping,get_oradores
 from text_parser import extraer_textos
 
 
@@ -28,4 +28,24 @@ def recuperar_informacion(orador,legislatura,paginacion):
     print(df)
     return df
 
-recuperar_informacion('Sánchez Pérez-Castejón, Pedro',13,2)
+
+
+def inicio():
+
+    legislatura = int(input(f"{bcolors.BOLD}Escriba el número de legislatura: {bcolors.ENDC}"))
+
+    options_oradores = get_oradores(legislatura)
+    for i,option in enumerate(options_oradores):
+        print(f'{bcolors.BOLD}{bcolors.OKCYAN}{i+1} {option}{bcolors.ENDC}')
+
+    num_option = int(input(f'{bcolors.BOLD}\nSeleccione un orador de los anteriores (número): {bcolors.ENDC}'))
+    orador = options_oradores[num_option-1]
+
+    paginacion = int(input(f"{bcolors.BOLD}Introduzca la paginación máxima donde buscar: {bcolors.ENDC}"))
+
+    recuperar_informacion(orador,legislatura,paginacion)
+
+
+if __name__ == "__main__":
+    inicio()
+    #recuperar_informacion('Sánchez Pérez-Castejón, Pedro',13,2)

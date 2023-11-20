@@ -115,7 +115,8 @@ def extraer_textos(orador, ruta, paginas):
                 fragmento = terminar_fragmento(cota_fragmento,cadena,caracteres)
 
                 #Si no se ha encontrado el final de la intervención en la página actual, se pasa a la siguiente página y se añade la cota actual a "pagina_anterior"
-                if fragmento == False:
+                #p debe no ser la última página, para llevar a cabo este paso.
+                if fragmento == False and len(pdf.pages)>p:
                     pagina_anterior = pagina_anterior+cota_fragmento if pagina_anterior != False else cota_fragmento
                     p+=1
                 else: 
@@ -124,6 +125,8 @@ def extraer_textos(orador, ruta, paginas):
                     if pagina_anterior != False:
                         fragmento = pagina_anterior+fragmento
                         pagina_anterior = False
+
+                    fragmento = cota_fragmento if len(pdf.pages)<=p else fragmento #Si no hay fragmento porque es la ultima página, pasa a serlo la cota entera
 
                     #Limpiar fragmento -> Eliminar paréntesis y el punto si lo precede. Eliminar saltos de linea
                     fragmento_limpio = re.sub(r'\n',' ',re.sub(r'\.\s\([^\(]*\)|\([^\(]*\)', '', fragmento))
