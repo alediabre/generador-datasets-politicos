@@ -5,13 +5,27 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 import shutil,os,requests,re
 import pdfplumber
+import pandas as pd
 
 # ==========================================
+
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
 
 
 def scraping(orador,legislatura,paginacion):
 
+    ruta = 'https://www.congreso.es/es/busqueda-de-intervenciones'
     dict_pdf = dict()
+    print(f"{bcolors.BOLD}Recuperando rutas de '{ruta}'...{bcolors.ENDC}")
 
     def guardar_links():
     #Obtener los links de los pdf de los plenos. Guardarlos en dict_pdf, clave: link , valor: paginas con intervenciones
@@ -30,7 +44,6 @@ def scraping(orador,legislatura,paginacion):
                 paginas.append(pag)
                 dict_pdf[pdf] = sorted(paginas) #Listas ordenadas de paginas para que haga de pila
 
-
     #CREAR NAVEGADOR-------------------------------------------------------------------------------------
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
@@ -44,7 +57,7 @@ def scraping(orador,legislatura,paginacion):
 
     #BUSQUEDA-----------------------------------------------------------------------------------------------
 
-    bot.get('https://www.congreso.es/es/busqueda-de-intervenciones')
+    bot.get(ruta)
     time.sleep(1)
 
     #Introducir filtro de legislatura
@@ -67,13 +80,15 @@ def scraping(orador,legislatura,paginacion):
 
     #Navegar por las paginaciones guardando los links
 
-    for _ in range(paginacion):
+    for i in range(paginacion):
         guardar_links()
         boton_siguiente = bot.find_elements(By.CSS_SELECTOR, '#_intervenciones_paginationLinksIntervenciones li.page-item a')[-2]
         bot.execute_script("arguments[0].scrollIntoView();", boton_siguiente)
         bot.execute_script("arguments[0].click();", boton_siguiente)
+        print(f"{bcolors.BOLD}Paginación: {i+1}/{paginacion}{bcolors.ENDC}", end="\r")
         time.sleep(1)
 
+    print(f"{bcolors.BOLD}{bcolors.OKGREEN}{len(dict_pdf.keys())} enlaces recuperados.{bcolors.ENDC}{bcolors.ENDC}")
     return dict_pdf
 
 
@@ -88,7 +103,8 @@ def descargar_documentos(pdf_dict,carpeta_destino):
         "Connection": "keep-alive",
     }
 
-    for link in pdf_dict.keys():
+    for i,link in enumerate(pdf_dict.keys()):
+        print(f"{bcolors.BOLD}Descargando documentos: {i}/{len(pdf_dict.keys())}{bcolors.ENDC}", end='\r')
         response = requests.get(link, headers=headers)
         if response.status_code == 200:
 
@@ -97,7 +113,9 @@ def descargar_documentos(pdf_dict,carpeta_destino):
             with open(ruta_archivo, 'wb') as f:
                 f.write(response.content)
 
-        else: print("No se ha podido recuperar el archivo "+str(link)+" correctamente. Código: "+str(response.status_code))
+        else: print(f"{bcolors.WARNING}No se ha podido recuperar el archivo {link} correctamente. Código: {response.status_code}{bcolors.ENDC}")
+    
+    print(f"{bcolors.BOLD}{bcolors.OKGREEN}Documentos correctamente descargados en {carpeta_destino}\n{bcolors.ENDC}{bcolors.ENDC}")
 
 
 
@@ -106,6 +124,7 @@ def extraer_textos(orador, ruta, paginas):
     #Regla2: Terminar en la línea anterior al siguiente nombre en negrita y mayúscula
     #Regla3: Eliminar contenido entre paréntesis y saltos de línea
     lista_fragmentos = []
+    num_paginas = len(paginas)
 
     def comenzar_fragmento(texto,vista):
         #Para encontrar el inicio busca el nombre del orador en mayúsculas, o en minúsculas entre paréntesis
@@ -159,6 +178,7 @@ def extraer_textos(orador, ruta, paginas):
             else: paginas.remove(p_origen)
 
         while len(paginas)>0:
+            print(f'{bcolors.BOLD}Página: {num_paginas-len(paginas)}/{num_paginas}{bcolors.ENDC}', end='\r') #Imprime el progreso de paginas
             pagina = pdf.pages[p-1]
             pagina_recortada = crop_page(pagina,50.0,100.0,550.0,780.0)
             texto = pagina_recortada.extract_text()   #Texto normal de la pagina
@@ -189,16 +209,16 @@ def extraer_textos(orador, ruta, paginas):
 
                     #Limpiar fragmento -> Eliminar paréntesis y el punto si lo precede. Eliminar saltos de linea
                     fragmento_limpio = re.sub(r'\n',' ',re.sub(r'\.\s\([^\(]*\)|\([^\(]*\)', '', fragmento))
-                    lista_fragmentos.append((orador,fragmento_limpio))
+                    nombre_doc = ruta.split("/")[2].split(".")[0]
+                    lista_fragmentos.append((orador,nombre_doc,fragmento_limpio))
                     avanzar_pagina()
 
     return lista_fragmentos
 
-#extraer_textos('ASENS LLODRÀ','./pdf/L14_CONG_DS_PL_DSCD-14-PL-2-C1.PDF',[57,59])
 
+def recuperar_informacion(orador,legislatura,paginacion):
 
-def crear_dataframe(orador,legislatura,paginacion):
-
+    lista_textos = []
     pdf_dict = scraping(orador,legislatura,paginacion)
     carpeta_destino = "./pdf"
     descargar_documentos(pdf_dict,carpeta_destino)
@@ -208,10 +228,15 @@ def crear_dataframe(orador,legislatura,paginacion):
         nombre_archivo = archivo.split('oficiales/')[1].replace('/','_')
         ruta = f"{carpeta_destino}/{nombre_archivo}"
         paginas = pdf_dict[archivo]
-        print(ruta)
-        print(paginas)
         textos = extraer_textos(nombre,ruta,paginas)
-        print(len(textos))
-        print(textos)
+        for t in textos:
+            lista_textos.append(t)
+        print(f"{bcolors.BOLD}{bcolors.OKCYAN}Archivo {nombre_archivo} {bcolors.OKGREEN}escaneado{bcolors.ENDC}")
 
-crear_dataframe('Sánchez Pérez-Castejón, Pedro',13,2)
+    print(f"{bcolors.BOLD}{bcolors.HEADER}{bcolors.UNDERLINE}\nDataFrame obtenido:{bcolors.ENDC}{bcolors.HEADER}{bcolors.BOLD}\nLegislatura {legislatura}\n{orador}\n{len(lista_textos)} intervenciones{bcolors.ENDC}")
+    df = pd.DataFrame(lista_textos, columns =['Orador','Documento','Texto'])
+    print(df)
+    return df
+    
+
+recuperar_informacion('Sánchez Pérez-Castejón, Pedro',13,2)
