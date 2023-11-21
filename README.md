@@ -26,6 +26,9 @@ git clone https://github.com/alediabre/recopilador-intervenciones-congreso.git
 Puedes usar indistintamente usar el comando *make run* o sólamente *make*. Debes ejecutarlo desde la carpeta raíz.
 
 ```bash
+cd recopilador-intervenciones-congreso
+```
+```bash
 make run
 ```
 ```bash

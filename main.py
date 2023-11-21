@@ -42,6 +42,9 @@ async def inicio():
     ruta_ds = "/congreso/datos" #Ruta del Dataset (Grupo/Dataset) dentro del archivo HDF5
     ruta_data = "./data" #Ruta del directorio donde estarán los archivos HDF5
 
+    if os.path.isdir(ruta_data)==False:
+        os.makedirs(ruta_data)
+
     #Seleccionar legislatura----------------------------------------------------------------------------------
     legislatura = await list_options_handler(range(1,16),"Escriba el número de legislatura [1-15]: ",verbose=False)
 
@@ -67,7 +70,7 @@ async def inicio():
 
         if f_option == 0: #Si el usuario decide crear nuevo archivo
             create_dataset(dataframe,ruta_ds)
-            
+
         else: #Si el usuario decide concatenar el df sobre otro archivo
             nombre_f = data_files[f_option-1]
             concatenate_dataframe(dataframe, ruta_data+nombre_f, ruta_ds) #Concatena con lo que había en el dataset y lo guarda

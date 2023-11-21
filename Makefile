@@ -1,20 +1,30 @@
 .PHONY: all run clean
 
 VENV = venv
-PYTHON = $(VENV)/bin/python3
-PIP = $(VENV)/bin/pip
+
+ifeq ($(OS),Windows_NT)
+	ACTIVATE = $(VENV)/Scripts/activate
+	PYTHON = $(VENV)/Scripts/python3
+	PIP = $(VENV)/Scripts/pip
+	RM = rd /s /q
+else
+	ACTIVATE = $(VENV)/bin/activate
+	PYTHON = $(VENV)/bin/python3
+	PIP = $(VENV)/bin/pip
+	RM = rm -rf
+endif
 
 all: run
 
-run: $(VENV)/bin/activate
+run: $(ACTIVATE)
 	$(PYTHON) main.py
 
 
-$(VENV)/bin/activate: requirements.txt
+$(ACTIVATE): requirements.txt
 	python3 -m venv $(VENV)
- 	$(PIP) install -r requirements.txt
+	$(PIP) install -r requirements.txt
 
 
 clean:
-	rm -rf __pycache__
-	rm -rf $(VENV)
+	$(RM) __pycache__
+	$(RM) $(VENV)
