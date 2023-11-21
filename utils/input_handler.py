@@ -1,18 +1,18 @@
 from utils.colores_consola import bcolors
 
-async def options_handler(options,question,**kwargs):
+async def options_handler(options,question,*args):
     '''
     Manejador de opciones que se le proporcionan al usuario.
-    Recibe la lista de opciones posibles a elegir (options),
-    la pregunta a mostrar en pantalla para el usuario (question),
-    una serie de argumentos con nombre que determinarán lo que devuelve la función según lo que el usuario responda.
-    Si el usuario responde con el valor del "known arg 0", devuelve 0
+    Recibe la lista de opciones posibles a elegir (options).
+    Recibe la pregunta a mostrar en pantalla para el usuario (question).
+    Recibe una serie de argumentos sin nombre que determinarán lo que devuelve la función según lo que el usuario responda.
+    Si el usuario responde con algo contenid en el "arg 0", devuelve 0
     '''
     answer = ""
     while answer not in options:
         answer = input(f"{bcolors.BOLD}{question}{bcolors.ENDC}")
-    for i,item in enumerate(kwargs.items()):
-        if answer in item[1]:
+    for i,arg in enumerate(args):
+        if answer in arg:
             return i
         
 
