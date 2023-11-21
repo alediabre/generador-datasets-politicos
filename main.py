@@ -40,6 +40,7 @@ def recuperar_informacion(orador,legislatura,paginacion):
 async def inicio():
 
     ruta_ds = "/congreso/datos" #Ruta del Dataset (Grupo/Dataset) dentro del archivo HDF5
+    ruta_data = "./data" #Ruta del directorio donde estarán los archivos HDF5
 
     #Seleccionar legislatura----------------------------------------------------------------------------------
     legislatura = await list_options_handler(range(1,16),"Escriba el número de legislatura [1-15]: ",verbose=False)
@@ -59,15 +60,17 @@ async def inicio():
     ds_option = await options_handler(list("YyNn"),"¿Desea incorporar los datos obtenidos a un Dataset? [Y/N]",list("Yy"),list("Nn"))
     
     if ds_option == 0: #Si el usuario responde SI ("Y" o "y")
+
         print(f"{bcolors.BOLD}Mostrando archivos HDF5 actuales\n{bcolors.ENDC}")
-        data_files = os.listdir('./data')
+        data_files = os.listdir(ruta_data)
         f_option = await list_options_handler(data_files,"Elija una opción: ",extra="Crear nuevo archivo")
 
         if f_option == 0: #Si el usuario decide crear nuevo archivo
             create_dataset(dataframe,ruta_ds)
+            
         else: #Si el usuario decide concatenar el df sobre otro archivo
             nombre_f = data_files[f_option-1]
-            concatenate_dataframe(dataframe,"./data/"+nombre_f,ruta_ds) #Concatena con lo que había en el dataset y lo guarda
+            concatenate_dataframe(dataframe, ruta_data+nombre_f, ruta_ds) #Concatena con lo que había en el dataset y lo guarda
     else:
         print(f"{bcolors.BOLD}Se ha descartado el Dataframe{bcolors.ENDC}")
 

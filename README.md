@@ -12,6 +12,14 @@ Asegúrate de tener instalados:
 - Python 3
 - Make
 
+## Instalación
+
+Ejecuta el siguiente comando para clonar el repositorio en tu máquina.
+
+```bash
+git clone https://github.com/alediabre/recopilador-intervenciones-congreso.git
+```
+
 
 ## Ejecutar el Programa
 

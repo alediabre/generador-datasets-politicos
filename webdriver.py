@@ -3,17 +3,37 @@ from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from utils.colores_consola import bcolors
 
 # ==========================================
 
+def wait_element(bot,time,css_selector,fail_message):
+    '''
+    Espera un tiempo "time" a que cargue un elemento por el bot.
+    El elemento se busca por un selector css dado.
+    En caso de no encontrarlo en el tiempo, imprime un mensaje de error y cierra el bot
+    '''
+    try:
+        elemento = WebDriverWait(bot, time).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, css_selector))
+        )
+        return elemento
+    except:
+        print(f"{bcolors.BOLD}{bcolors.FAIL}{fail_message}{bcolors.ENDC}")
+        bot.quit()
 
-def get_bot():
 
+def get_bot(headless = False):
+    '''
+    Crea un navegador con unas opciones específicas. Si activamos el modo headless, no aparece en pantalla el navegador
+    '''
     options = webdriver.ChromeOptions()
     options.add_argument('--no-sandbox')
-    #options.add_argument("--headless")
+    if headless:
+        options.add_argument("--headless")
     options.add_argument("--log-level=3")
     mobile_emulation = {
         "userAgent": "Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/90.0.1025.166 Mobile Safari/535.19"}
@@ -66,11 +86,9 @@ def scraping(orador,legislatura,paginacion):
     #BUSQUEDA-----------------------------------------------------------------------------------------------
 
     bot.get(ruta)
-    time.sleep(1)
-
+    
     #Introducir filtro de legislatura-----------------------------------------------------------------------
-
-    filtro_legislatura = bot.find_element(By.CSS_SELECTOR, 'select.legislaturas')
+    filtro_legislatura = wait_element(bot,10,'select.legislaturas','La página no ha cargado correctamente. Revisa tu conexióno a internet')
     filtro_legislatura.click()
 
     opcion_legislatura = filtro_legislatura.find_element(By.CSS_SELECTOR, 'option[value="'+str(legislatura)+'"]')
@@ -102,22 +120,27 @@ def scraping(orador,legislatura,paginacion):
 
 
 def get_oradores(legislatura):
-
+    '''
+    Mediante un bot automatizado de Selenium, navega por la web del cogreso.
+    1)Introduce el filtro de la legislatura
+    2)Despliega la lista de oradores
+    Devuelve una lista de oradores existentes en la legislatura dada
+    '''
     print(f"{bcolors.BOLD}\nBuscando oradores. Espere unos segundos...\n{bcolors.ENDC}")
     lista_oradores = []
     ruta = 'https://www.congreso.es/es/busqueda-de-intervenciones'
     bot = get_bot()
     bot.get(ruta)
-    time.sleep(1)
 
     #Introducir filtro de legislatura-----------------------------------------------------------------------
-    filtro_legislatura = bot.find_element(By.CSS_SELECTOR, 'select.legislaturas')
+    filtro_legislatura = wait_element(bot,10,'select.legislaturas','La página no ha cargado correctamente. Revisa tu conexióno a internet')
     filtro_legislatura.click()
 
     opcion_legislatura = filtro_legislatura.find_element(By.CSS_SELECTOR, 'option[value="'+str(legislatura)+'"]')
     opcion_legislatura.click()
     time.sleep(1)
 
+    #Desplegar lista de oradores----------------------------------------------------------------------------
     mostrar_oradores = bot.find_element(By.CSS_SELECTOR, '#plus_fautor')
     mostrar_oradores.click()
     time.sleep(2)

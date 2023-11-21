@@ -7,14 +7,14 @@ PIP = $(VENV)/bin/pip
 all: run
 
 run: $(VENV)/bin/activate
- $(PYTHON) main.py
+	$(PYTHON) main.py
 
 
 $(VENV)/bin/activate: requirements.txt
- python3 -m venv $(VENV)
- $(PIP) install -r requirements.txt
+	python3 -m venv $(VENV)
+ 	$(PIP) install -r requirements.txt
 
 
 clean:
- rm -rf __pycache__
- rm -rf $(VENV)
+	rm -rf __pycache__
+	rm -rf $(VENV)

@@ -8,8 +8,9 @@ def descargar_documentos(pdf_dict,carpeta_destino):
     Nombra los archivos pdf en base a su enlace.
     '''
 
-    shutil.rmtree(carpeta_destino)
-    os.makedirs('pdf')
+    if os.path.isdir(carpeta_destino):
+        shutil.rmtree(carpeta_destino)
+    os.makedirs(carpeta_destino)
 
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/97.0.4692.99 Safari/537.36",
