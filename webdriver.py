@@ -90,6 +90,7 @@ def scraping(orador,legislatura,paginacion):
     #Introducir filtro de legislatura-----------------------------------------------------------------------
     filtro_legislatura = wait_element(bot,10,'select.legislaturas','La página no ha cargado correctamente. Revisa tu conexióno a internet')
     filtro_legislatura.click()
+    time.sleep(1)
 
     opcion_legislatura = filtro_legislatura.find_element(By.CSS_SELECTOR, 'option[value="'+str(legislatura)+'"]')
     opcion_legislatura.click()
@@ -135,6 +136,7 @@ def get_oradores(legislatura):
     #Introducir filtro de legislatura-----------------------------------------------------------------------
     filtro_legislatura = wait_element(bot,10,'select.legislaturas','La página no ha cargado correctamente. Revisa tu conexióno a internet')
     filtro_legislatura.click()
+    time.sleep(1)
 
     opcion_legislatura = filtro_legislatura.find_element(By.CSS_SELECTOR, 'option[value="'+str(legislatura)+'"]')
     opcion_legislatura.click()

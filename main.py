@@ -73,7 +73,7 @@ async def inicio():
 
         else: #Si el usuario decide concatenar el df sobre otro archivo
             nombre_f = data_files[f_option-1]
-            concatenate_dataframe(dataframe, ruta_data+nombre_f, ruta_ds) #Concatena con lo que había en el dataset y lo guarda
+            concatenate_dataframe(dataframe, ruta_data+"/"+nombre_f, ruta_ds) #Concatena con lo que había en el dataset y lo guarda
     else:
         print(f"{bcolors.BOLD}Se ha descartado el Dataframe{bcolors.ENDC}")
 
