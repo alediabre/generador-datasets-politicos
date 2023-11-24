@@ -3,13 +3,15 @@
 VENV = venv
 
 ifeq ($(OS),Windows_NT)
+	PYTHON = python
 	ACTIVATE = $(VENV)/Scripts/activate
-	PYTHON = $(VENV)/Scripts/python3
+	PYTHON_VENV = $(VENV)/Scripts/python
 	PIP = $(VENV)/Scripts/pip
 	RM = rd /s /q
 else
+	PYTHON = python3
 	ACTIVATE = $(VENV)/bin/activate
-	PYTHON = $(VENV)/bin/python3
+	PYTHON_VENV = $(VENV)/bin/python3
 	PIP = $(VENV)/bin/pip
 	RM = rm -rf
 endif
@@ -17,11 +19,11 @@ endif
 all: run
 
 run: $(ACTIVATE)
-	$(PYTHON) main.py
+	$(PYTHON_VENV) main.py
 
 
 $(ACTIVATE): requirements.txt
-	python3 -m venv $(VENV)
+	$(PYTHON) -m venv $(VENV)
 	$(PIP) install -r requirements.txt
 
 

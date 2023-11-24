@@ -30,8 +30,9 @@ def extraer_textos(orador, ruta, paginas):
         Devuelve el texto acotado desde el inicio del fragmento en adelante
         '''
         orador_en_parentesis = orador.title()
-        matches_inicio = list(re.finditer(rf'{orador}.*:|[A-Z]\w+[A-Z]\s\({orador_en_parentesis}\):', texto))
+        matches_inicio = list(re.finditer(rf'{orador}.*:|[A-Z]\w+[A-Z](\s[0-9]*)?\s\({orador_en_parentesis}\):', texto))
         if len(matches_inicio)>vista:
+            #print(matches_inicio[vista])
             return texto[matches_inicio[vista].end():].strip()
         else: return False
         
