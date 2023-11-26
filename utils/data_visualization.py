@@ -16,12 +16,16 @@ def crear_html(tabla, ruta_ds, nombre_f):
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Visualización Dataframe</title>
 </head>
 <body>
     {encabezado}
     <div id="tabla_dinamica">
         {tabla_dinamica}
+    </div>
+    <div id="botonera">
+        <div id="boton_ordenar"></div>
     </div>
 </body>
 <script src="script.js"></script>
