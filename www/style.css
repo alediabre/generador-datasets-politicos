@@ -1,0 +1,94 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600&display=swap');
+
+*{
+    --color-fila-impar: hsl(215, 21%, 11%);
+    --color-fila-par: 	hsl(216, 28%, 7%);
+    --color-cabecera: hsl(218, 80%, 2%);
+    --color-bordes: hsl(0, 0%, 50%);
+    --color-fondo: 	hsl(216, 28%, 7%);
+    --color-fuente: hsl(0, 0%, 95%);
+    --color-fuente-secundaria: hsl(0, 0%, 85%);
+    --color-fuente-destacada: hsl(265, 89%, 79%);
+    
+    font-family: 'Roboto Slab', serif;
+    color: var(--color-fuente);
+    font-weight: 400;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem .5rem 1rem .5rem;
+    background-color: var(--color-fondo);
+}
+
+#encabezado{
+    font-size: 1.2rem;
+}
+
+#encabezado p span{
+    color: var(--color-fuente-destacada);
+}
+
+table, tr, td ,th{
+    border: 1px inset var(--color-bordes);
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table thead th{
+    position: sticky;
+    top:0;
+    background-color: var(--color-cabecera);
+    padding: .5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+table tbody tr:nth-child(odd){
+    background-color: var(--color-fila-impar);
+}
+
+table tbody tr:nth-child(even){
+    background-color: var(--color-fila-par);
+}
+
+
+#tabla_dinamica{
+    position: relative;
+    max-height: 85vh;
+    overflow-y: scroll;
+}
+
+#tabla_dinamica td{
+    max-width: 10vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    padding: .8rem .6rem .8rem .6rem;
+}
+
+#tabla_dinamica td:nth-child(1){
+}
+
+#tabla_dinamica td:nth-child(2){
+}
+
+#tabla_dinamica td:nth-child(3){
+}
+
+#tabla_dinamica td:nth-child(4){
+    max-width: 60vw;
+    color: var(--color-fuente-secundaria);
+}
+
+#tabla_dinamica td.expanded {
+    white-space: normal;
+    overflow: visible;
+    word-break: break-word;
+    text-overflow: inherit;
+}
