@@ -1,42 +1,33 @@
-import os
-import webbrowser
+import os, signal
+from flask import Flask, jsonify, render_template
+import logging
+import webbrowser, threading
 
 from utils.colores_consola import bcolors
 from utils.input_handler import list_options_handler, options_handler
 from utils.dataset_handler import read_dataframe
+from utils.template_creator import crear_html                                                                                                                                                                                                                                                                                                        
 
 
-def crear_html(tabla, ruta_ds, nombre_f):
-    ruta_web = "./www/dataframe.html"
+app = Flask(__name__, template_folder='../www', static_folder='../www/static')
 
-    html_content = """
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <title>Visualización Dataframe</title>
-</head>
-<body>
-    {encabezado}
-    <div id="tabla_dinamica">
-        {tabla_dinamica}
-    </div>
-    <div id="botonera">
-        <div id="boton_ordenar"></div>
-    </div>
-</body>
-<script src="script.js"></script>
-</html>"""
 
-    encabezado = f'<div id="encabezado"><p>Visualización del dataset <span>{ruta_ds}</span> en el archivo <span>{nombre_f}</span></p></div>'
-    html_filled = html_content.format(tabla_dinamica=tabla, encabezado=encabezado)
+def open_browser():
+    webbrowser.open('http://localhost:5000', new=2)
 
-    with open(ruta_web, 'w') as file:
-        file.write(html_filled)
+@app.route('/')
+def index():
+    return render_template('dataframe.html')
 
+@app.route('/stopServer', methods=['POST'])
+def stopServer():
+    os.kill(os.getpid(), signal.SIGINT)
+    return jsonify({ "success": True, "message": "El servidor está desconectado." })
+
+@app.route('/deleteRows', methods=['POST'])
+def deleteRows():
+
+    return jsonify({ "success": True, "message": "El dataset ha sido modificado." })
 
 
 
@@ -57,7 +48,13 @@ async def inicio_visualizacion():
 
     df = read_dataframe(ruta_data+"/"+nombre_f, ruta_ds)
     crear_html(df.to_html(), ruta_ds, nombre_f)
+    
+    log = logging.getLogger('werkzeug')
+    log.disabled = True #Servidor flask no verboso
 
-    path = os.path.abspath("./www/dataframe.html")
-    url = f'file:///{path}'
-    webbrowser.open(url, new=2)
+    browser_thread = threading.Timer(1, open_browser)
+    browser_thread.start()
+    app.run()
+    browser_thread.join()
+    
+    print("aaa")

@@ -11,6 +11,7 @@
     --color-fuente-secundaria: hsl(0, 0%, 85%);
     --color-secundario: hsl(265, 89%, 79%);
     --color-terciario: hsl(204, 89%, 79%);
+    --color-peligro: hsl(0, 89%, 49%);
     
     font-family: 'Roboto Slab', serif;
     color: var(--color-fuente);
@@ -90,6 +91,11 @@ table tbody tr:nth-child(even){
     transition: all 1s ease;
 }
 
+#tabla_dinamica td:nth-child(6):hover{
+    background-color: var(--color-peligro);
+    transition: all .2s ease;
+}
+
 #tabla_dinamica td.expanded {
     white-space: normal;
     overflow: visible;
@@ -100,16 +106,20 @@ table tbody tr:nth-child(even){
 #botonera{
     display: flex;
     flex-direction: row;
+    gap: 2rem;
 }
 
-#boton_ordenar{
+#botonera div{
     cursor: pointer;
     padding: 1rem;
     background-color: var(--color-secundario);
     color: var(--color-fondo);
     border-radius: 5%;
-    width: 200px;
     text-align: center;
+}
+
+#boton_ordenar{
+    width: 200px;
 }
 
 #boton_ordenar i{
