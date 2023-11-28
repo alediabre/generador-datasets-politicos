@@ -36,6 +36,20 @@ body{
     color: var(--color-secundario);
 }
 
+#buscadorTexto {
+    background-color: var(--color-fuente-secundaria);
+    width: 15%;
+    padding: .5rem;
+    border: 2px solid var(--color-secundario);
+    color: black;
+}
+
+.resaltado {
+    background-color: yellow;
+    color: var(--color-fondo);
+    font-weight: bold;
+}
+
 table, tr, td ,th{
     border: 1px inset var(--color-bordes);
     border-collapse: collapse;
@@ -62,7 +76,7 @@ table tbody tr:nth-child(even){
 
 #tabla_dinamica{
     position: relative;
-    max-height: 75vh;
+    max-height: 70vh;
     overflow-y: scroll;
 }
 
@@ -114,14 +128,17 @@ table tbody tr:nth-child(even){
     padding: 1rem;
     background-color: var(--color-secundario);
     color: var(--color-fondo);
-    border-radius: 5%;
     text-align: center;
 }
 
-#boton_ordenar{
+#boton_ordenar, #boton_modificar{
     width: 200px;
 }
 
-#boton_ordenar i{
+#boton_ordenar i, #boton_modificar span{
     color: var(--color-fondo);
+}
+
+#botonera #boton_salida{
+    background-color: var(--color-terciario);
 }

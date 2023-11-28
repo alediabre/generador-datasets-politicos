@@ -20,6 +20,12 @@ def read_dataframe(ruta_f,ruta_ds):
     f.close()
     return df
 
+def drop_rows_dataframe(rows,ruta_f,ruta_ds):
+    f = pd.HDFStore(ruta_f)
+    df = pd.read_hdf(f, ruta_ds)
+    updated_df = df.drop(rows)
+    f[ruta_ds] = updated_df
+    f.close()
 
 def concatenate_dataframe(new_df,ruta_f,ruta_ds):
     f = pd.HDFStore(ruta_f)

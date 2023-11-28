@@ -7,19 +7,20 @@ def crear_html(tabla, ruta_ds, nombre_f):
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel='stylesheet' href='{style}'>
+    <link rel='stylesheet' href="{style}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Visualización Dataframe</title>
 </head>
 <body>
     {encabezado}
+    <input type="text" id="buscadorTexto" onkeyup="buscarTexto()" placeholder="Busca cualquier texto..." title="Escribe un fragmento">
     <div id="tabla_dinamica">
         {tabla_dinamica}
     </div>
     <div id="botonera">
         <div id="boton_ordenar">Ordenar por Documento <i class="fa-solid fa-file"></i></div>
-        <div id="boton_modificar">Guardar modificaciones</div>
-        <div id="boton_salir">Salir</div>
+        <div id="boton_modificar">Guardar modificaciones <span>0</span></div>
+        <div id="boton_salida">Generar documentos</div>
     </div>
 </body>
 <script src="{script}"></script>
