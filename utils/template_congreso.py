@@ -1,5 +1,5 @@
 def crear_html(tabla, ruta_ds, nombre_f):
-    ruta_web = "./www/dataframe.html"
+    ruta_web = "./www/dataframe_congreso.html"
 
     html_content = """
 <!DOCTYPE html>
@@ -13,7 +13,18 @@ def crear_html(tabla, ruta_ds, nombre_f):
 </head>
 <body>
     {encabezado}
-    <input type="text" id="buscadorTexto" onkeyup="buscarTexto()" placeholder="Busca cualquier texto..." title="Escribe un fragmento">
+    <div id="filtros">
+        <input type="text" id="buscadorTexto" placeholder="Busca cualquier texto..." title="Escribe un fragmento">
+        <div class="slidecontainer">
+            <input type="range" min="1" max="150" value="150" class="slider" id="rangoPalabras">
+            <p>Palabras: <span id="numPalabras"></span></p>
+        </div>
+        <div class="info">
+            <p>Nº Oradores: <span></span></p>
+            <p>Nº Documentos: <span></span></p>
+            <p>Nº Elementos: <span></span></p>
+        </div>
+    </div>
     <div id="tabla_dinamica">
         {tabla_dinamica}
     </div>
@@ -23,12 +34,12 @@ def crear_html(tabla, ruta_ds, nombre_f):
         <div id="boton_salida">Generar documentos</div>
     </div>
 </body>
-<script src="{script}"></script>
+<script type="module" src="{script}"></script>
 </html>"""
 
     encabezado = f'<div id="encabezado"><p>Visualización del dataset <span>{ruta_ds}</span> en el archivo <span>{nombre_f}</span></p></div>'
-    style = "{{ url_for('static', filename='css/style.css') }}"
-    script = "{{ url_for('static', filename='js/script.js') }}"
+    style = "{{ url_for('static', filename='css/styles_congreso.css') }}"
+    script = "{{ url_for('static', filename='js/congreso.js') }}"
     html_filled = html_content.format(tabla_dinamica=tabla, encabezado=encabezado, style=style, script=script)
 
     with open(ruta_web, 'w') as file:

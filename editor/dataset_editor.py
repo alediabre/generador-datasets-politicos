@@ -5,7 +5,7 @@ import logging
 from utils.colores_consola import bcolors
 from utils.input_handler import list_options_handler, options_handler
 from utils.dataset_handler import read_dataframe, drop_rows_dataframe
-from utils.template_creator import crear_html                                                                                                                                                                                                                                                                                                        
+from utils.template_congreso import crear_html                                                                                                                                                                                                                                                                                                        
 
 
 app = Flask(__name__, template_folder='../www', static_folder='../www/static')
@@ -13,11 +13,12 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True #Cuando se recarga la página, se car
 
 ruta_data, ruta_ds, nombre_f = '','',''
 
-@app.route('/')
+
+@app.route('/congreso')
 def index():
     df = read_dataframe(ruta_data+"/"+nombre_f, ruta_ds)
     crear_html(df.to_html(), ruta_ds, nombre_f)
-    return render_template('dataframe.html')
+    return render_template('dataframe_congreso.html')
 
 
 @app.route('/deleteRows', methods=['POST'])
@@ -29,7 +30,6 @@ def deleteRows():
     
     drop_rows_dataframe(filas, ruta_data+"/"+nombre_f, ruta_ds)
     return jsonify({ "success": True, "message": "El dataset ha sido modificado." })
-
 
 
 
@@ -50,5 +50,5 @@ async def inicio_visualizacion():
     log = logging.getLogger('werkzeug')
     log.disabled = True #Servidor flask no verboso
 
-    print(f"{bcolors.BOLD}{bcolors.WARNING}\nAbra el navegador en 'http://localhost:5000' para la visualización. Para finalizar pulse CTRL+C{bcolors.ENDC}")
+    print(f"{bcolors.BOLD}{bcolors.WARNING}\nAbra el navegador en 'http://localhost:5000/congreso' para la visualización. Para finalizar pulse CTRL+C{bcolors.ENDC}")
     app.run()
