@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/styles_editor.css') }}">
+    <link rel='stylesheet' href="{{ url_for('static', filename='css/styles_congreso.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Visualización Dataframe</title>
+</head>
+<body>
+    <div id="encabezado"><p>Visualización del dataset <span>/twitter/datos</span> en el archivo <span>datos_prueba.hdf5</span></p></div>
+    <div id="filtros">
+        <input type="text" id="buscadorTexto" data-columna="2" placeholder="Busca cualquier texto..." title="Escribe un fragmento">
+        <div class="slidecontainer">
+            <input type="range" min="1" max="150" value="150" class="slider" id="rangoPalabras" data-columna="2">
+            <p>Palabras: <span id="numPalabras"></span></p>
+        </div>
+        <div class="info">
+            <p>Nº Elementos: <span></span></p>
+            <p>Nº Oradores: <span></span></p>
+            <p>Nº Documentos: <span></span></p>
+        </div>
+    </div>
+    <div id="tabla_dinamica">
+        <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Autor</th>
+      <th>Texto</th>
+      <th>Hashtags</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>sanchezcastejon</td>
+      <td>Rescatar de la injusticia del olvido a las científicas del pasado para inspirar a las del futuro. Magnífica iniciativa la de @twitamit_es para fomentar la presencia de niñas y adolescentes en la ciencia. Un objetivo que seguiremos impulsando desde el Gobierno.</td>
+      <td>#NoMoreMatildas</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>sanchezcastejon</td>
+      <td>Comienza la presidencia portuguesa del @EUCouncil con la determinación de actuar por la recuperación justa, ecológica y digital de la UE. Todo nuestro apoyo y el deseo de trabajar junto a @2021PortugalEU por un futuro de prosperidad compartida.</td>
+      <td>#EU2021PT</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>sanchezcastejon</td>
+      <td>Gracias a todas las personas que llevan trabajando sin descanso desde la semana pasada para paliar los efectos de  y de la  . Y gracias, también, a quienes han colaborado de forma desinteresada en muchos puntos de nuestro país. Vuestro ejemplo nos hace mejores.</td>
+      <td>#Filomena#OlaDeFrío</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>sanchezcastejon</td>
+      <td>Rescatar de la injusticia del olvido a las científicas del pasado para inspirar a las del futuro. Magnífica iniciativa la de @twitamit_es para fomentar la presencia de niñas y adolescentes en la ciencia. Un objetivo que seguiremos impulsando desde el Gobierno.</td>
+      <td>#NoMoreMatildas</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>sanchezcastejon</td>
+      <td>Gracias a todas las personas que llevan trabajando sin descanso desde la semana pasada para paliar los efectos de  y de la  . Y gracias, también, a quienes han colaborado de forma desinteresada en muchos puntos de nuestro país. Vuestro ejemplo nos hace mejores.</td>
+      <td>#Filomena#OlaDeFrío</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>PabloIglesias</td>
+      <td>Esta moción de censura no es de ningún partido, es de la gente que no perdió la esperanza.  ¡Sí se puede!</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>PabloIglesias</td>
+      <td>TVE reconoce su propia manipulación para atacar a Izquierda Unida y a Podemos</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>PabloIglesias</td>
+      <td>El ministro Zoido ha rechazado retirar la condecoración al torturador 'Billy el Niño', despreciando los testimonios de sus víctimas. El PP vuelve a amparar a los criminales del franquismo. Vergüenza.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>PabloIglesias</td>
+      <td>Patriotismo es cuidar de la gente. M. Rajoy debe irse.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>PabloIglesias</td>
+      <td>El Gobierno en B del PP debe terminar. Es hora de que una moción de censura saque de la Moncloa a M. Rajoy.</td>
+      <td>#QueSeVayan</td>
+    </tr>
+    <tr>
+      <th>10</th>
+      <td>PabloIglesias</td>
+      <td>Llevamos más de un año diciendo que hay que sacar al PP del Gobierno. Apoyaremos la moción de censura. España necesita sacar a los corruptos del apararo del Estado y políticas sociales de rescate ciudadano. Para ello son necesarios amplios acuerdos que garanticen estabilidad</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>11</th>
+      <td>PabloIglesias</td>
+      <td>Gracias Amalia</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>12</th>
+      <td>PabloIglesias</td>
+      <td>Hace tiempo que hablar de "casos aislados" en el PP es una broma de mal gusto. La corrupción es la mayor amenaza que pesa sobre la democracia española. Hay que echarlos.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>13</th>
+      <td>PabloIglesias</td>
+      <td>Hoy Salvador Puig Antich cumpliría 70 años si no hubiera sido asesinado por la dictadura. Fue un honor homenajear su memoria en mi primera intervención en el Congreso.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>14</th>
+      <td>PabloIglesias</td>
+      <td>Dice Ciudadanos que para sacar del Gobierno al partido de la Gürtel no puede votar con los nacionalistas.  Para aprobar los presupuestos de M. Rajoy y otras cuantas cosas no les importó nada aliarse con los nacionalistas  https:// /nacional/cuando-pp-y-ciudadanos-se-alian-con-los-nacionalistas-y-no-se-rompe-espana.html …</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>15</th>
+      <td>PabloIglesias</td>
+      <td>M. Rajoy no puede cometer la bajeza de dimitir para esquivar una moción de censura. Lo mínimo que debe hacer tras años de saqueo y de legislar contra la mayoría de la ciudadanía es aguantar el chaparrón e irse con cierta dignidad.</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>16</th>
+      <td>PabloIglesias</td>
+      <td>Sobre la moción de censura, ABRO HILO</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>17</th>
+      <td>PabloIglesias</td>
+      <td>Adorar al mejor compañero jamás depende de certificados ni de pedigrís  Hay pocas cosas que me hagan más que feliz que saber que, por difícil que haya sido el día, por fea que sea el alma de muchos humanos, mis perros me esperan en casa</td>
+      <td>#DíadelPerroSinRaza</td>
+    </tr>
+    <tr>
+      <th>18</th>
+      <td>PabloIglesias</td>
+      <td>Un párrafo brutal que escupe verdades como puños sobre la historia de nuestro país y sobre la verdad del poder</td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+    </div>
+    <div id="botonera">
+        <div id="boton_ordenar">Ordenar por Documento <i class="fa-solid fa-file"></i></div>
+        <div id="boton_modificar">Guardar modificaciones <span>0</span></div>
+        <div id="boton_salida">Generar documentos</div>
+    </div>
+</body>
+<script>window.contexto = 'congreso'</script>
+<script type="module" src="{{ url_for('static', filename='js/editor.js') }}"></script>
+</html>

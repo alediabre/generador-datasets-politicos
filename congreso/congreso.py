@@ -2,8 +2,8 @@ import pandas as pd
 import os
 
 from utils.colores_consola import bcolors
-from utils.input_handler import options_handler,list_options_handler
-from utils.dataset_handler import create_dataset,concatenate_dataframe
+from utils.input_handler import list_options_handler
+from utils.dataset_handler import interaccion_usuario_dataset
 from congreso.docs import descargar_documentos
 from congreso.webdriver import scraping,get_oradores
 from congreso.text_parser import extraer_textos
@@ -62,20 +62,4 @@ async def inicio_congreso():
     #Proceso de recuperar información y crear DataFrame-------------------------------------------------------
     dataframe = recuperar_informacion(orador,legislatura,paginacion)
 
-    #Preguntar por guardado de DF-----------------------------------------------------------------------------
-    ds_option = await options_handler(list("YyNn"),"¿Desea incorporar los datos obtenidos a un Dataset? [Y/N]",list("Yy"),list("Nn"))
-    
-    if ds_option == 0: #Si el usuario responde SI ("Y" o "y")
-
-        print(f"{bcolors.BOLD}Mostrando archivos HDF5 actuales\n{bcolors.ENDC}")
-        data_files = os.listdir(ruta_data)
-        f_option = await list_options_handler(data_files,"Elija una opción: ",extra="Crear nuevo archivo")
-
-        if f_option == 0: #Si el usuario decide crear nuevo archivo
-            create_dataset(dataframe,ruta_ds)
-
-        else: #Si el usuario decide concatenar el df sobre otro archivo
-            nombre_f = data_files[f_option-1]
-            concatenate_dataframe(dataframe, ruta_data+"/"+nombre_f, ruta_ds) #Concatena con lo que había en el dataset y lo guarda
-    else:
-        print(f"{bcolors.BOLD}Se ha descartado el Dataframe{bcolors.ENDC}")
+    await interaccion_usuario_dataset(ruta_data, ruta_ds, dataframe)

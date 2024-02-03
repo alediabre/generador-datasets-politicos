@@ -1,0 +1,153 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;600&display=swap');
+
+*{
+    --color-fila-impar: hsl(215, 21%, 11%);
+    --color-fila-par: 	hsl(216, 28%, 7%);
+    --color-cabecera: hsl(218, 80%, 2%);
+    --color-bordes: hsl(0, 0%, 50%);
+    --color-fondo: 	hsl(216, 28%, 7%);
+    --color-fuente: hsl(0, 0%, 95%);
+    --color-fuente-secundaria: hsl(0, 0%, 85%);
+    --color-secundario: hsl(265, 89%, 79%);
+    --color-terciario: hsl(204, 89%, 79%);
+    --color-peligro: hsl(0, 89%, 49%);
+    
+    font-family: 'Roboto Slab', serif;
+    color: var(--color-fuente);
+    font-weight: 400;
+}
+
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem .5rem 1rem .5rem;
+    background-color: var(--color-fondo);
+}
+
+#encabezado{
+    font-size: 1.2rem;
+}
+
+#encabezado p span{
+    color: var(--color-secundario);
+}
+
+#filtros{
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.slidecontainer p{
+    margin: 0;
+}
+.slidecontainer span{
+    font-weight: 600;
+}
+
+.slider {
+    width: 300px;
+    height: 15px;
+    cursor: pointer;
+}
+
+#buscadorTexto {
+    background-color: var(--color-fuente-secundaria);
+    width: 200px;
+    padding: .5rem;
+    border: 2px solid var(--color-secundario);
+    color: black;
+}
+
+.resaltado {
+    background-color: yellow;
+    color: var(--color-fondo);
+    font-weight: bold;
+}
+
+.info p{
+    margin: 0;
+    padding: .1rem;
+}
+.info p span{
+    font-weight: 600;
+}
+
+table, tr, td ,th{
+    border: 1px inset var(--color-bordes);
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+table thead th{
+    position: sticky;
+    top:0;
+    background-color: var(--color-cabecera);
+    padding: .5rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+table tbody tr:nth-child(odd){
+    background-color: var(--color-fila-impar);
+}
+
+table tbody tr:nth-child(even){
+    background-color: var(--color-fila-par);
+}
+
+
+#tabla_dinamica{
+    position: relative;
+    max-height: 70vh;
+    overflow-y: scroll;
+}
+
+#tabla_dinamica td{
+    max-width: 10vw;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    padding: .8rem .6rem .8rem .6rem;
+}
+
+
+#tabla_dinamica td.expanded {
+    white-space: normal;
+    overflow: visible;
+    word-break: break-word;
+    text-overflow: inherit;
+}
+
+#botonera{
+    display: flex;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+#botonera div{
+    cursor: pointer;
+    padding: 1rem;
+    background-color: var(--color-secundario);
+    color: var(--color-fondo);
+    text-align: center;
+}
+
+#boton_ordenar, #boton_modificar{
+    width: 200px;
+}
+
+#boton_ordenar i, #boton_modificar span{
+    color: var(--color-fondo);
+}
+
+#botonera #boton_salida{
+    background-color: var(--color-terciario);
+}

@@ -1,9 +1,9 @@
-#tabla_dinamica td:nth-child(4){
+#tabla_dinamica td:nth-child(3){
     max-width: 60vw;
     color: var(--color-fuente-secundaria);
 }
 
-#tabla_dinamica td:nth-child(4):hover{
+#tabla_dinamica td:nth-child(3):hover{
     background-color: var(--color-secundario);
     color: var(--color-fondo);
 }

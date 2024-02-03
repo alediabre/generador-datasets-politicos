@@ -68,8 +68,9 @@ function buscarTexto(columna, funcionActualizarDatos) {
     funcionActualizarDatos()
 }
 
-function barraBusqueda(columna,funcionActualizarDatos){
+function barraBusqueda(funcionActualizarDatos){
     const barra = document.querySelector('#buscadorTexto')
+    const columna = barra.dataset.columna
     barra.addEventListener('keyup', function(){
         buscarTexto(columna,funcionActualizarDatos)
     })
@@ -85,6 +86,7 @@ function wordCount(str) {
 function filtroPalabras(max, funcionActualizarDatos){
     const slider = document.getElementById("rangoPalabras")
     const output = document.getElementById("numPalabras")
+    const columna = slider.dataset.columna
     output.innerHTML = slider.value;
 
     slider.oninput = function() {
@@ -99,7 +101,7 @@ function filtroPalabras(max, funcionActualizarDatos){
         }else{
             output.innerHTML = input
             for (var i = 1; i < tr.length; i++) {
-                const td = tr[i].getElementsByTagName("td")[2]
+                const td = tr[i].getElementsByTagName("td")[columna]
                 var textValue = td.textContent || td.innerText
                 if (wordCount(textValue) > input){
                     tr[i].style.display = 'none'

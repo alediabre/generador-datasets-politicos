@@ -5,11 +5,16 @@ var indicesEliminados = []
 document.addEventListener('DOMContentLoaded', function () {
     func.celdasExpansibles()
     agregarColumnas()
-    botonOrdenarDocumentoyOrador()
     botonModificar()
-    func.barraBusqueda(2, actualizarInfoCongreso)
-    func.filtroPalabras(150, actualizarInfoCongreso)
-    actualizarInfoCongreso()
+    func.barraBusqueda(actualizarInfo)
+    func.filtroPalabras(150, actualizarInfo)
+    actualizarInfo()
+    switch (window.contexto) {
+        case 'congreso':
+            botonOrdenarDocumentoyOrador('Orador','Documento')
+        case 'twitter':
+            botonOrdenarAutor()
+    }
 })
 
 
@@ -35,19 +40,27 @@ function agregarColumnas() {
     })
 }
 
-function botonOrdenarDocumentoyOrador(){
+function botonOrdenarDocumentoyOrador(opcion1,opcion2){
     var col = 0
     const boton = document.querySelector('#boton_ordenar')
     boton.addEventListener('click', function(){
         col = (col + 1) % 2;
         if (col === 1){
-            boton.innerHTML = `Ordenar por Orador <i class="fa-solid fa-user"></i>`
+            boton.innerHTML = `Ordenar por ${opcion1} <i class="fa-solid fa-user"></i>`
         }else{
-            boton.innerHTML = `Ordenar por Documento <i class="fa-solid fa-file"></i>`
+            boton.innerHTML = `Ordenar por ${opcion2} <i class="fa-solid fa-file"></i>`
         }
         func.ordenarPorColumna(col)
     }) 
 }
+
+function botonOrdenarAutor(){
+    const boton = document.querySelector('#boton_ordenar')
+    boton.addEventListener('click', function(){
+        func.ordenarPorColumna(0)
+    }) 
+}
+
 
 function botonModificar(){
     document.getElementById('boton_modificar').addEventListener('click', function() {
@@ -68,18 +81,20 @@ function botonModificar(){
 }
 
 
-function actualizarInfoCongreso(){
+function actualizarInfo(){
     const table = document.querySelector("#tabla_dinamica table")
     var tr = Object.values(table.getElementsByTagName("tr")).filter(function(r){return r.style.display != 'none'})
     tr.shift() /*Se omite el primer elemento porque es la cabecera de la tabla*/
     var numElem = tr.length
-    var oradores = tr.map(function(r){return r.getElementsByTagName("td")[0].textContent})
-    var numOrad = Array.from(new Set(oradores)).length
-    var documentos = tr.map(function(r){return r.getElementsByTagName("td")[1].textContent})
-    var numDoc = Array.from(new Set(documentos)).length
+    var col1 = tr.map(function(r){return r.getElementsByTagName("td")[0].textContent})
+    var distinct_col1 = Array.from(new Set(col1)).length
+    var col2 = tr.map(function(r){return r.getElementsByTagName("td")[1].textContent})
+    var distinct_col2 = Array.from(new Set(col2)).length
     
     const info = document.querySelectorAll(".info p span")
-    info[0].textContent = numOrad
-    info[1].textContent = numDoc
-    info[2].textContent = numElem
+    info[0].textContent = numElem
+    info[1].textContent = distinct_col1
+    if (info[2]){
+        info[2].textContent = distinct_col2
+    }
 }
