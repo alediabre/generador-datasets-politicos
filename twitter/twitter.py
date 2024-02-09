@@ -33,6 +33,7 @@ async def inicio_twitter():
     if os.path.isdir(ruta_data)==False:
         os.makedirs(ruta_data)
 
+    
     #Mi usuario de Twitter----------------------------------------------------------------------------------
     my_user = input(f"{bcolors.WARNING}Introduzca su usuario de Twitter (el scrapping se realizará con dicho usuario): {bcolors.ENDC}")
 
@@ -56,6 +57,7 @@ async def inicio_twitter():
         fecha_ini = input(f"{bcolors.BOLD}Introduzca una fecha de inicio (YYYY-MM-DD): {bcolors.ENDC}")
         fecha_fin = input(f"{bcolors.BOLD}Introduzca una fecha de fin (YYYY-MM-DD): {bcolors.ENDC}")
 
+    
     #Proceso de recuperar información y crear DataFrame-------------------------------------------------------
     dataframe = recuperar_informacion(my_user,my_pass,autor,num_tweets,fecha_ini,fecha_fin)
 

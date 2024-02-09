@@ -14,7 +14,7 @@ from utils.colores_consola import bcolors
 
 # ==========================================
 
-def get_bot(headless = False):
+def get_bot(headless = True):
     '''
     Crea un navegador con unas opciones específicas. Si activamos el modo headless, no aparece en pantalla el navegador
     '''
@@ -70,7 +70,7 @@ def scraping(usuario,num_max,fecha_ini,fecha_fin,mi_username,mi_password):
     #EXTRACCION----------------------------------------------------------------------------------------------
 
     if bot.current_url == "https://twitter.com/home": #Si el login ha tenido éxito
-        print(f"{bcolors.OKGREEN}Login exitoso. Scrapping en proceso ...{bcolors.ENDC}")
+        print(f"{bcolors.OKGREEN}Login exitoso. Scraping en proceso ...{bcolors.ENDC}")
     
         url = 'https://twitter.com/search?f=top&q=(from%3A'+str(usuario)+')%20until%3A'+str(fecha_fin)+'%20since%3A'+str(fecha_ini)+'&src=typed_query'
         bot.get(url)
@@ -79,42 +79,55 @@ def scraping(usuario,num_max,fecha_ini,fecha_fin,mi_username,mi_password):
         bot.quit()
         return timeline      
     else:
-         bot.quit()
-         print(f"{bcolors.FAIL}Error en las credenciales introducidas{bcolors.ENDC}")
-         return []
+        bot.quit()
+        print(f"{bcolors.FAIL}Error en las credenciales introducidas{bcolors.ENDC}")
+        return []
 
 
 
 def recuperar_tweets(bot,num):
-    '''
-    Recibe un navegador y el numero de tweets a recuperar, devuelve una lista con los html de los num primeros tweets recuperados
-    Realiza un scroll para la búsqueda hasta llegar al número necesario o no encontrar más tweets
-    '''
-    tweets_almacenados = []
-    tweets = []
-    contador = 0
+    tweets = [] #Tweets finales a devolver
+    vistos = [] #Rasgo que identifique a los tweets ya vistos (texto)
+    contador = 0 #Contador de rondas sin añadir nuevos tweets
+    break_loop = False
+    try:
+        #Hasta que se alcance el numero de tweets deseado, o el contador de rondas sin añadir nuevos tweets supere el limite
+        while contador < 4:
+            articulos = [a for a in bot.find_elements(By.TAG_NAME, "article") if a.text not in vistos]
+            vistos_ronda = [] #Tweets vistos en esta ronda
 
-    while len(tweets) < num:
-        contador += 1
-        tweets_cargados = bot.find_elements(By.XPATH,'//article')
-        if tweets_cargados == []:
-            print(f"{bcolors.FAIL}Ha ocurrido un error en el scrapping. Revise su conexión y compruebe que existan tweets del usuario y fechas introducidos{bcolors.ENDC}")
-            return []
-        
-        #Verificar y agregar tweets únicos a la lista
-        for tweet in tweets_cargados:
-            if tweet not in tweets_almacenados:
-                tweets_almacenados.append(tweet)
-                tweets.append(tweet.get_attribute("innerHTML"))
-                contador = 0
+            for i in range(len(articulos)):
+                #Se vuelven a extraer los articulos para evitar StaleElementReferenceException y se prosigue por el indice siguiente
+                contador = 0 #Contador a 0 por haber articulos en esta ronda. 
+                articulos = [a for a in bot.find_elements(By.TAG_NAME, "article") if a.text not in vistos]
+                articulo = articulos[i]
+                vistos_ronda.append(articulo.text)
 
-        if contador > 3: #Si se realizan varios scrolls y no carga ningún tweet nuevo
-            break
+                #Scroll hasta el tweet y click en su texto
+                texto = articulo.find_element(By.CSS_SELECTOR, 'div[data-testid="tweetText"]')
+                bot.execute_script("arguments[0].scrollIntoView();", texto)
+                bot.execute_script("window.scrollBy(0,-80)", "")
+                texto.click()
+                time.sleep(0.5)
 
-        bot.execute_script("window.scrollBy(0,600)", "")
-        time.sleep(0.7)
-        
-    return tweets[:num]
+                #Añadir a la lista de tweets el html del tweet ya ampliado y volver. Si se alcanza el maximo, salir del bucle anidado
+                tweet_completo = bot.find_element(By.TAG_NAME, "article")
+                tweets.append(tweet_completo.get_attribute("innerHTML"))
+                if len(tweets) >= num:
+                    break_loop = True
+                    break
+                bot.back()
+                time.sleep(0.5)
+            
+            if break_loop: break
+            # Desplazarse hacia abajo para cargar más elementos. Añadir los vistos de la ronda a los vistos totales
+            bot.execute_script("window.scrollBy(0,600)", "")
+            time.sleep(0.7)
+            vistos.extend(vistos_ronda)
+            contador += 1
+
+    finally:
+        return tweets
     
 
 
@@ -125,7 +138,8 @@ def extraer_datos_tweets(usuario,lista_tweets):
     for article in lista_tweets:
         #Crear un objeto bs4 con el HTML obtenido
         soup = BeautifulSoup(article, "lxml")
-        div_texto = soup.find("div", dir="auto")
+        div_texto = soup.find("div", {"data-testid" : "tweetText"})
+
         if div_texto != None:
             try:
                 idioma = div_texto["lang"]

@@ -20,7 +20,7 @@ Asegúrate de tener instalados:
 Ejecuta el siguiente comando para clonar el repositorio en tu máquina.
 
 ```bash
-git clone https://github.com/alediabre/recopilador-intervenciones-congreso.git
+git clone https://github.com/alediabre/generador-datasets-politicos.git
 ```
 
 
@@ -29,7 +29,7 @@ git clone https://github.com/alediabre/recopilador-intervenciones-congreso.git
 Puedes usar indistintamente usar el comando *make run* o sólamente *make*. Debes ejecutarlo desde la carpeta raíz.
 
 ```bash
-cd recopilador-intervenciones-congreso
+cd generador-datasets-politicos
 ```
 ```bash
 make run
