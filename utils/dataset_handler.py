@@ -42,6 +42,16 @@ def concatenate_dataframe(new_df,ruta_f,ruta_ds):
         new_df.to_hdf(ruta_f, ruta_ds)
 
 
+def generate_document(ruta_data,nombre_f,dataset):
+    ruta_f = ruta_data+"/"+nombre_f
+    ruta_ds = "/"+dataset+"/datos"
+    f = pd.HDFStore(ruta_f)
+    df = pd.read_hdf(f, ruta_ds)
+    with open('./documents/'+nombre_f+'_'+dataset+'.txt', 'w') as doc:
+        for _, fila in df.iterrows():
+            doc.write(fila['Texto'] + '\n\n')
+    f.close()
+
 
 async def interaccion_usuario_dataset(ruta_data, ruta_ds, dataframe):
     '''

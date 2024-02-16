@@ -4,7 +4,7 @@ import logging
 
 from utils.colores_consola import bcolors
 from utils.input_handler import list_options_handler, options_handler
-from utils.dataset_handler import read_dataframe, drop_rows_dataframe
+from utils.dataset_handler import read_dataframe, drop_rows_dataframe, generate_document
 from utils.template_congreso import crear_html_congreso
 from utils.template_twitter import crear_html_twitter                                                                                                                                                                                                                                                                    
 
@@ -40,6 +40,14 @@ def deleteRows():
     drop_rows_dataframe(filas, ruta_data+"/"+nombre_f, ruta_ds)
     return jsonify({ "success": True, "message": "El dataset ha sido modificado." })
 
+
+@app.route('/createDoc', methods=['POST'])
+def createDoc():
+    data = request.json
+    dataset = data.get('dataset')
+    generate_document(ruta_data,nombre_f,dataset)
+    return jsonify({ "success": True, "message": "Se ha generado un documento con el dataset en la ruta ./documents" })
+    
 
 
 async def inicio_visualizacion():

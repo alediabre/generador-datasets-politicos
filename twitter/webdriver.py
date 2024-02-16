@@ -14,12 +14,11 @@ from utils.colores_consola import bcolors
 
 # ==========================================
 
-def get_bot(headless = True):
+def get_bot(headless = False):
     '''
     Crea un navegador con unas opciones específicas. Si activamos el modo headless, no aparece en pantalla el navegador
     '''
     options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
     if headless:
         options.add_argument("--headless")
     options.add_argument("--log-level=3")
@@ -41,13 +40,13 @@ def scraping(usuario,num_max,fecha_ini,fecha_fin,mi_username,mi_password):
 
     #CREAR NAVEGADOR-------------------------------------------------------------------------------------
     
-    bot = get_bot()
+    bot = get_bot(headless=False)
 
     #LOGIN-----------------------------------------------------------------------------------------------
 
     bot.get('https://twitter.com/i/flow/login')
 
-    time.sleep(1)
+    time.sleep(2)
 
     username_space = bot.find_element(By.XPATH,'//input[@autocomplete="username"]')
     username_space.send_keys(mi_username)
@@ -106,7 +105,7 @@ def recuperar_tweets(bot,num):
                 #Scroll hasta el tweet y click en su texto
                 texto = articulo.find_element(By.CSS_SELECTOR, 'div[data-testid="tweetText"]')
                 bot.execute_script("arguments[0].scrollIntoView();", texto)
-                bot.execute_script("window.scrollBy(0,-80)", "")
+                bot.execute_script("window.scrollBy(0,-120)", "")
                 texto.click()
                 time.sleep(0.5)
 
@@ -143,7 +142,7 @@ def extraer_datos_tweets(usuario,lista_tweets):
         if div_texto != None:
             try:
                 idioma = div_texto["lang"]
-                if idioma != 'es': #Solo aceptamos español
+                if idioma != 'es': #Solo aceptamos idioma español
                     continue
             except KeyError: #Si no tiene idioma significa que el tweet retweeteado ha sido eliminado
                 continue

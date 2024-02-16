@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
     func.celdasExpansibles()
     agregarColumnas()
     botonModificar()
+    botonCrearDoc()
     func.barraBusqueda(actualizarInfo)
     func.filtroPalabras(150, actualizarInfo)
     actualizarInfo()
@@ -73,6 +74,23 @@ function botonModificar(){
                 alert(data.message)
                 indicesEliminados = []
                 document.querySelector('#boton_modificar span').textContent = 0
+            })
+            .catch(error => {
+                console.error('Error del servidor:', error)
+            })
+    })
+}
+
+
+function botonCrearDoc(){
+    document.getElementById('boton_salida').addEventListener('click', function() {
+        fetch('/createDoc', {
+             method: 'POST',
+             headers: {'Content-Type': 'application/json'},
+             body: JSON.stringify({ 'dataset': window.contexto }), })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message)
             })
             .catch(error => {
                 console.error('Error del servidor:', error)

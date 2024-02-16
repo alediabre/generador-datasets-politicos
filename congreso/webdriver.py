@@ -31,7 +31,6 @@ def get_bot(headless = False):
     Crea un navegador con unas opciones específicas. Si activamos el modo headless, no aparece en pantalla el navegador
     '''
     options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
     if headless:
         options.add_argument("--headless")
     options.add_argument("--log-level=3")
