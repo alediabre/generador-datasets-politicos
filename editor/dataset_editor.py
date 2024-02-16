@@ -43,9 +43,11 @@ def deleteRows():
 
 @app.route('/createDoc', methods=['POST'])
 def createDoc():
+    if os.path.isdir('./documents')==False:
+        os.makedirs('./documents')
     data = request.json
     dataset = data.get('dataset')
-    generate_document(ruta_data,nombre_f,dataset)
+    generate_document(ruta_data,nombre_f[:-5],dataset)
     return jsonify({ "success": True, "message": "Se ha generado un documento con el dataset en la ruta ./documents" })
     
 

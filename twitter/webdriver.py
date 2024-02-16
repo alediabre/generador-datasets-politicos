@@ -103,20 +103,24 @@ def recuperar_tweets(bot,num):
                 vistos_ronda.append(articulo.text)
 
                 #Scroll hasta el tweet y click en su texto
-                texto = articulo.find_element(By.CSS_SELECTOR, 'div[data-testid="tweetText"]')
-                bot.execute_script("arguments[0].scrollIntoView();", texto)
-                bot.execute_script("window.scrollBy(0,-120)", "")
-                texto.click()
-                time.sleep(0.5)
+                try:
+                    texto = articulo.find_element(By.CSS_SELECTOR, 'div[data-testid="tweetText"]')
+                    bot.execute_script("arguments[0].scrollIntoView();", texto)
+                    bot.execute_script("window.scrollBy(0,-120)", "")
+                    texto.click()
+                    time.sleep(0.5)
 
-                #Añadir a la lista de tweets el html del tweet ya ampliado y volver. Si se alcanza el maximo, salir del bucle anidado
-                tweet_completo = bot.find_element(By.TAG_NAME, "article")
-                tweets.append(tweet_completo.get_attribute("innerHTML"))
-                if len(tweets) >= num:
-                    break_loop = True
-                    break
-                bot.back()
-                time.sleep(0.5)
+                    #Añadir a la lista de tweets el html del tweet ya ampliado y volver. Si se alcanza el maximo, salir del bucle anidado
+                    tweet_completo = bot.find_element(By.TAG_NAME, "article")
+                    tweets.append(tweet_completo.get_attribute("innerHTML"))
+                    print(f"{bcolors.BOLD}{len(tweets)} tweets recuperados{bcolors.ENDC}", end="\r")
+                    if len(tweets) >= num:
+                        break_loop = True
+                        break
+                    bot.back()
+                    time.sleep(0.5)
+                except NoSuchElementException:
+                    print(f"{bcolors.BOLD}Tweet sin texto       {bcolors.ENDC}", end="\r")
             
             if break_loop: break
             # Desplazarse hacia abajo para cargar más elementos. Añadir los vistos de la ronda a los vistos totales

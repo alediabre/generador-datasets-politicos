@@ -43,7 +43,7 @@ def concatenate_dataframe(new_df,ruta_f,ruta_ds):
 
 
 def generate_document(ruta_data,nombre_f,dataset):
-    ruta_f = ruta_data+"/"+nombre_f
+    ruta_f = ruta_data+"/"+nombre_f+".hdf5"
     ruta_ds = "/"+dataset+"/datos"
     f = pd.HDFStore(ruta_f)
     df = pd.read_hdf(f, ruta_ds)
