@@ -1,5 +1,6 @@
 import os,h5py,tables
 import pandas as pd
+from docx import Document
 from utils.colores_consola import bcolors
 from utils.input_handler import options_handler,list_options_handler
 
@@ -47,10 +48,31 @@ def generate_document(ruta_data,nombre_f,dataset):
     ruta_ds = "/"+dataset+"/datos"
     f = pd.HDFStore(ruta_f)
     df = pd.read_hdf(f, ruta_ds)
-    with open('./documents/'+nombre_f+'_'+dataset+'.txt', 'w') as doc:
-        for _, fila in df.iterrows():
-            doc.write(fila['Texto'] + '\n\n')
     f.close()
+
+    limite_caracteres = 80000
+    long_actual = 0
+    doc_id = 1
+
+    doc = Document()
+    for _, fila in df.iterrows():
+        
+        long_texto = len(fila['Texto'])
+        long_titulo = len(fila['Orador'])
+        if long_actual + long_texto + long_titulo > limite_caracteres:
+            doc.save(f'./documents/{nombre_f}_{dataset}_{doc_id}.docx')
+            doc_id += 1
+            doc = Document()
+            long_actual = 0
+        
+        doc.add_heading(fila['Orador'], level=3)
+        long_actual += long_titulo
+        
+        doc.add_paragraph(fila['Texto'])
+        long_actual += long_texto
+
+    doc.save(f'./documents/{nombre_f}_{dataset}_{doc_id}.docx')
+    
 
 
 async def interaccion_usuario_dataset(ruta_data, ruta_ds, dataframe):
