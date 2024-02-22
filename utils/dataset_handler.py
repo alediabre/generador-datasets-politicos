@@ -50,6 +50,9 @@ def generate_document(ruta_data,nombre_f,dataset):
     df = pd.read_hdf(f, ruta_ds)
     f.close()
 
+    if dataset == 'congreso': col1 = 'Orador'
+    else: col1 = 'Autor'
+
     limite_caracteres = 80000
     long_actual = 0
     doc_id = 1
@@ -58,21 +61,26 @@ def generate_document(ruta_data,nombre_f,dataset):
     for _, fila in df.iterrows():
         
         long_texto = len(fila['Texto'])
-        long_titulo = len(fila['Orador'])
+        long_titulo = len(fila[col1])
         if long_actual + long_texto + long_titulo > limite_caracteres:
             doc.save(f'./documents/{nombre_f}_{dataset}_{doc_id}.docx')
             doc_id += 1
             doc = Document()
             long_actual = 0
         
-        doc.add_heading(fila['Orador'], level=3)
+        doc.add_heading(fila[col1], level=3)
         long_actual += long_titulo
         
-        doc.add_paragraph(fila['Texto'])
+        if dataset == 'congreso':
+            frases_texto = fila['Texto'].split('. ')
+            for frase in frases_texto:
+                doc.add_paragraph(frase)
+        else:
+            doc.add_paragraph(fila['Texto'])
         long_actual += long_texto
 
     doc.save(f'./documents/{nombre_f}_{dataset}_{doc_id}.docx')
-    
+
 
 
 async def interaccion_usuario_dataset(ruta_data, ruta_ds, dataframe):
